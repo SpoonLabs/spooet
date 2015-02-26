@@ -23,7 +23,7 @@ public class JavaPoetPrettyPrinterTest {
 
 		spooner.addSource(new File("src/test/java/sample"));
 		spooner.process();
-		spooner.print(new File("build/spooned"));
+		spooner.print(new File("target/spooned"));
 		Assert.assertTrue(spooner.compile());
 	}
 
