@@ -12,4 +12,8 @@ public enum AnEnum {
 		name = "name";
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }
