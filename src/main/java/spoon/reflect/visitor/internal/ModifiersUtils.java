@@ -24,6 +24,35 @@ public final class ModifiersUtils {
 		return result.toArray(new Modifier[result.size()]);
 	}
 
+	public static ModifierKind getModifierKind(Modifier modifier) {
+		switch (modifier) {
+		case PUBLIC:
+			return ModifierKind.PUBLIC;
+		case PROTECTED:
+			return ModifierKind.PROTECTED;
+		case PRIVATE:
+			return ModifierKind.PRIVATE;
+		case ABSTRACT:
+			return ModifierKind.ABSTRACT;
+		case STATIC:
+			return ModifierKind.STATIC;
+		case FINAL:
+			return ModifierKind.FINAL;
+		case TRANSIENT:
+			return ModifierKind.TRANSIENT;
+		case VOLATILE:
+			return ModifierKind.VOLATILE;
+		case SYNCHRONIZED:
+			return ModifierKind.SYNCHRONIZED;
+		case NATIVE:
+			return ModifierKind.NATIVE;
+		case STRICTFP:
+			return ModifierKind.STRICTFP;
+		default:
+			throw new IllegalArgumentException("unknown modifier");
+		}
+	}
+
 	public static Modifier getReflect(ModifierKind modifierKind) {
 		switch (modifierKind) {
 		case PUBLIC:
