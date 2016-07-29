@@ -9,7 +9,7 @@ import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtSwitch;
 import spoon.reflect.code.CtTry;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.visitor.CtInheritanceScanner;
 import spoon.reflect.visitor.DefaultJavaPrettyPrinter;
 
@@ -19,11 +19,10 @@ import spoon.reflect.visitor.DefaultJavaPrettyPrinter;
 public class CodePrinter extends CtInheritanceScanner {
 
 	final MethodSpec.Builder currentMethod;
-	final CtSimpleType currentThis;
+	final CtType<?> currentThis;
 	final DefaultJavaPrettyPrinter defaultJavaPrettyPrinter;
 
-	public CodePrinter(MethodSpec.Builder currentMethod, CtSimpleType currentThis,
-			DefaultJavaPrettyPrinter defaultJavaPrettyPrinter) {
+	public CodePrinter(MethodSpec.Builder currentMethod, CtType<?> currentThis, DefaultJavaPrettyPrinter defaultJavaPrettyPrinter) {
 		this.currentMethod = currentMethod;
 		this.currentThis = currentThis;
 

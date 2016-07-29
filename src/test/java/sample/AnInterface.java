@@ -5,7 +5,5 @@ package sample;
  */
 @MyAnnotation(12)
 public interface AnInterface<T> {
-
 	<R> T testSomething(R value);
-
 }

@@ -9,7 +9,7 @@ import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtExecutable;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 
 import java.lang.annotation.Annotation;
 
@@ -18,7 +18,7 @@ import java.lang.annotation.Annotation;
  */
 public abstract class AbstractContext implements Context {
 	@Override
-	public void addType(TypeSpec.Builder typeSpec, CtSimpleType type) {
+	public void addType(TypeSpec.Builder typeSpec, CtType<?> type) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -38,8 +38,7 @@ public abstract class AbstractContext implements Context {
 	}
 
 	@Override
-	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec,
-			CtAnnotation<A> annotation) {
+	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec, CtAnnotation<A> annotation) {
 		throw new UnsupportedOperationException();
 	}
 }

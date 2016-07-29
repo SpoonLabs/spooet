@@ -7,7 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtExecutable;
 import spoon.reflect.declaration.CtField;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 
 import java.lang.annotation.Annotation;
 
@@ -22,7 +22,7 @@ public class TypeContext extends AbstractContext {
 	}
 
 	@Override
-	public void addType(TypeSpec.Builder typeSpec, CtSimpleType type) {
+	public void addType(TypeSpec.Builder typeSpec, CtType<?> type) {
 		builder.addType(typeSpec.build());
 	}
 
@@ -37,8 +37,7 @@ public class TypeContext extends AbstractContext {
 	}
 
 	@Override
-	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec,
-			CtAnnotation<A> annotation) {
+	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec, CtAnnotation<A> annotation) {
 		builder.addAnnotation(annotationSpec.build());
 	}
 }

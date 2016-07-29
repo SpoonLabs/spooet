@@ -3,176 +3,190 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
 
-    <groupId>fr.inria.gforge.spoon</groupId>
-    <artifactId>spooet</artifactId>
-    <version>0.1-SNAPSHOT</version>
+  <groupId>fr.inria.gforge.spoon.labs</groupId>
+  <artifactId>spooet</artifactId>
+  <version>0.1-SNAPSHOT</version>
 
-    <name>spooet</name>
-    <description>Use open source project JavaPoet to generate beautiful Java code with Spoon.</description>
-    <url>https://github.com/SpoonLabs/spooet</url>
+  <name>Spooet</name>
+  <description>Use open source project JavaPoet to generate beautiful Java code with Spoon.</description>
+  <url>https://github.com/SpoonLabs/spooet</url>
 
-    <developers>
-        <developer>
-            <name>Nicolas Petitprez</name>
-            <roles>
-                <role>Contributor</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Gérard Paligot</name>
-            <roles>
-                <role>Contributor</role>
-            </roles>
-        </developer>
-    </developers>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <properties>
-        <java.src.version>1.7</java.src.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <!-- Compilation -->
+    <java.src.version>1.7</java.src.version>
 
-    <repositories>
-        <repository>
-            <id>ossrh-snapshot</id>
-            <name>Maven Repository for JavaPoet Snapshot</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots/>
-        </repository>
-        <repository>
-            <id>gforge.inria.fr-snapshot</id>
-            <name>Maven Repository for Spoon Snapshot</name>
-            <url>http://spoon.gforge.inria.fr/repositories/snapshots/</url>
-            <snapshots/>
-        </repository>
-    </repositories>
+    <!-- Dependencies -->
+    <spoon.version>5.2.0</spoon.version>
+    <javapoet.version>1.7.0</javapoet.version>
 
-    <scm>
-        <url>https://github.com/SpoonLabs/spooet</url>
-        <connection>scm:git:git://github.com/SpoonLabs/spooet.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/SpoonLabs/spooet.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+    <!-- Test dependencies -->
+    <junit.version>4.12</junit.version>
+  </properties>
 
-    <organization>
-        <name>Inria</name>
-        <url>http://www.inria.fr</url>
-    </organization>
+  <dependencies>
+    <dependency>
+      <groupId>fr.inria.gforge.spoon</groupId>
+      <artifactId>spoon-core</artifactId>
+      <version>${spoon.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+      <version>${javapoet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>ossrh-release</id>
-            <name>Release</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh-snapshot</id>
-            <name>Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>${java.src.version}</source>
+          <target>${java.src.version}</target>
+        </configuration>
+      </plugin>
 
-    <dependencies>
-        <dependency>
-            <groupId>fr.inria.gforge.spoon</groupId>
-            <artifactId>spoon-core</artifactId>
-            <version>4.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
 
-    <build>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.2</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>${java.src.version}</source>
-                    <target>${java.src.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
-                </configuration>
-            </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
+      </build>
+    </profile>
+  </profiles>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.3</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+  <repositories>
+    <repository>
+      <id>gforge.inria.fr-release</id>
+      <name>Maven Repository for Spoon Release</name>
+      <url>http://spoon.gforge.inria.fr/repositories/releases/</url>
+    </repository>
+  </repositories>
 
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+  <scm>
+    <url>https://github.com/SpoonLabs/spooet</url>
+    <connection>scm:git:git://github.com/SpoonLabs/spooet.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/SpoonLabs/spooet.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+  <distributionManagement>
+    <repository>
+      <id>ossrh-release</id>
+      <name>Release</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh-snapshot</id>
+      <name>Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
+  <organization>
+    <name>Inria</name>
+    <url>http://www.inria.fr</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>Nicolas Petitprez</name>
+      <roles>
+        <role>Contributor</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Gérard Paligot</name>
+      <roles>
+        <role>Contributor</role>
+      </roles>
+    </developer>
+  </developers>
 </project>

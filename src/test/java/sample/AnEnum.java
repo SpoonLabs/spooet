@@ -6,7 +6,7 @@ package sample;
 public enum AnEnum {
 	a, b, c, d, e, f, g;
 
-	private   String name;
+	private String name;
 
 	AnEnum() {
 		name = "name";

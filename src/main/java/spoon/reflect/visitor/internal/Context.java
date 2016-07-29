@@ -8,9 +8,8 @@ import com.squareup.javapoet.TypeSpec;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtExecutable;
 import spoon.reflect.declaration.CtField;
-import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 
 import java.lang.annotation.Annotation;
 
@@ -18,7 +17,7 @@ import java.lang.annotation.Annotation;
  * Created by nicolas on 24/02/2015.
  */
 public interface Context {
-	void addType(TypeSpec.Builder typeSpec, CtSimpleType<?> type);
+	void addType(TypeSpec.Builder typeSpec, CtType<?> type);
 
 	void addMethod(MethodSpec.Builder methodSpec, CtExecutable<?> method);
 

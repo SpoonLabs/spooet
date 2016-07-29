@@ -26,12 +26,13 @@ public class ExecutableContext extends AbstractContext {
 	@Override
 	public void addParameter(ParameterSpec.Builder param, boolean varargs, CtParameter parameter) {
 		methodSpec.addParameter(param.build());
-		if (varargs) methodSpec.varargs();
+		if (varargs) {
+			methodSpec.varargs();
+		}
 	}
 
 	@Override
-	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec,
-			CtAnnotation<A> annotation) {
+	public <A extends Annotation> void addAnnotation(AnnotationSpec.Builder annotationSpec, CtAnnotation<A> annotation) {
 		methodSpec.addAnnotation(annotationSpec.build());
 	}
 }

@@ -2,7 +2,6 @@ package spoon.reflect.visitor.internal;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import spoon.reflect.declaration.CtSimpleType;
 import spoon.reflect.declaration.CtType;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class PackageContext extends AbstractContext {
 	}
 
 	@Override
-	public void addType(TypeSpec.Builder typeSpec, CtSimpleType type) {
+	public void addType(TypeSpec.Builder typeSpec, CtType<?> type) {
 		this.type = typeSpec;
 	}
 
