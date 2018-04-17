@@ -26,7 +26,7 @@
     <java.src.version>1.7</java.src.version>
 
     <!-- Dependencies -->
-    <spoon.version>5.2.0</spoon.version>
+    <spoon.version>6.2.0</spoon.version>
     <javapoet.version>1.7.0</javapoet.version>
 
     <!-- Test dependencies -->
