@@ -1,6 +1,7 @@
 package spoon.reflect.visitor.internal;
 
 import com.squareup.javapoet.MethodSpec;
+import spoon.compiler.Environment;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCase;
 import spoon.reflect.code.CtCatch;
@@ -20,17 +21,16 @@ public class CodePrinter extends CtInheritanceScanner {
 
 	final MethodSpec.Builder currentMethod;
 	final CtType<?> currentThis;
-	final DefaultJavaPrettyPrinter defaultJavaPrettyPrinter;
 
-	public CodePrinter(MethodSpec.Builder currentMethod, CtType<?> currentThis, DefaultJavaPrettyPrinter defaultJavaPrettyPrinter) {
+	Environment env;
+	public CodePrinter(MethodSpec.Builder currentMethod, CtType<?> currentThis, Environment env) {
 		this.currentMethod = currentMethod;
 		this.currentThis = currentThis;
-
-		this.defaultJavaPrettyPrinter = defaultJavaPrettyPrinter;
+		this.env = env;
 	}
 
 	private String codeToString(CtElement element) {
-		defaultJavaPrettyPrinter.reset();
+		DefaultJavaPrettyPrinter defaultJavaPrettyPrinter = new DefaultJavaPrettyPrinter(env);
 		//	defaultJavaPrettyPrinter.getContext().currentThis.push(currentThis.getReference());
 		defaultJavaPrettyPrinter.scan(element);
 		//	defaultJavaPrettyPrinter.getContext().currentThis.pop();

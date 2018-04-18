@@ -20,6 +20,6 @@ public class PoetLauncher extends Launcher {
 
 	@Override
 	public PrettyPrinter createPrettyPrinter() {
-		return new JavaPoetPrettyPrinter(new DefaultJavaPrettyPrinter(getEnvironment()));
+		return new JavaPoetPrettyPrinter(getEnvironment());
 	}
 }

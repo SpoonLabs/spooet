@@ -11,6 +11,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
+import spoon.compiler.Environment;
+import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.cu.CompilationUnit;
 import spoon.reflect.declaration.CtAnnotation;
@@ -23,9 +25,11 @@ import spoon.reflect.declaration.CtExecutable;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtInterface;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtModule;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.declaration.CtTypeParameter;
 import spoon.reflect.reference.CtArrayTypeReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
@@ -48,10 +52,9 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 
 	private Stack<Context> contexts = new Stack<>();
 
-	private final DefaultJavaPrettyPrinter stmtprinter;
-
-	public JavaPoetPrettyPrinter(DefaultJavaPrettyPrinter stmtprinter) {
-		this.stmtprinter = stmtprinter;
+	Environment env;
+	public JavaPoetPrettyPrinter(Environment env) {
+		this.env = env;
 	}
 
 	private void enter(Context context) {
@@ -98,9 +101,8 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 			List<TypeName> bounds = new ArrayList<>();
 			CtTypeParameterReference reference = (CtTypeParameterReference) ref;
 
-			for (CtTypeReference<?> ctTypeReference : reference.getBounds()) {
-				bounds.add(getTypeName(ctTypeReference));
-			}
+			bounds.add(getTypeName(reference.getBoundingType()));
+
 			if ("?".equals(reference.getSimpleName())) {
 				if (bounds.isEmpty()) {
 					bounds.add(TypeName.get(Object.class));
@@ -127,8 +129,8 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 
 	private TypeSpec.Builder createType(CtType<?> type, TypeSpec.Builder builder) {
 		builder.addModifiers(ModifiersUtils.getReflect(type.getModifiers()));
-		for (CtTypeReference<?> ctTypeReference : type.getFormalTypeParameters()) {
-			TypeVariableName var = getTypeName(ctTypeReference);
+		for (CtTypeParameter ctTypeReference : type.getFormalCtTypeParameters()) {
+			TypeVariableName var = getTypeName(ctTypeReference.getReference());
 			builder.addTypeVariable(var);
 		}
 		for (CtTypeReference intf : type.getSuperInterfaces()) {
@@ -177,9 +179,11 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 	public <T> void visitCtField(CtField<T> f) {
 		FieldSpec.Builder field = FieldSpec.builder(getTypeName(f.getType()), f.getSimpleName()).addModifiers(ModifiersUtils.getReflect(f.getModifiers()));
 
-		stmtprinter.reset();
-		stmtprinter.scan(f.getDefaultExpression());
-		String result = stmtprinter.getResult().replaceAll("\\$", "\\$\\$");
+		CtExpression<T> defaultExpression = f.getDefaultExpression();
+		String result = "null";
+		if (defaultExpression !=null) {
+			result = defaultExpression.toString().replaceAll("\\$", "\\$\\$");
+		}
 		field.initializer(result);
 		contexts.peek().addField(field, f);
 	}
@@ -242,7 +246,7 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 			builder.addException(getTypeName(ctTypeReference));
 		}
 		if (executable.getBody() != null) {
-			CodePrinter printer = new CodePrinter(builder, executable.getParent(CtType.class), stmtprinter);
+			CodePrinter printer = new CodePrinter(builder, executable.getParent(CtType.class), env);
 
 			for (CtStatement statement : executable.getBody().getStatements()) {
 				printer.scan(statement);
@@ -265,8 +269,8 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 	public <T> void visitCtMethod(CtMethod<T> m) {
 		final MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(m.getSimpleName()).returns(getTypeName(m.getType()));
 		visitMethod(methodSpec, m);
-		for (CtTypeReference<?> ctTypeReference : m.getFormalTypeParameters()) {
-			methodSpec.addTypeVariable((TypeVariableName) getTypeName(ctTypeReference));
+		for (CtTypeParameter type : m.getFormalCtTypeParameters()) {
+			methodSpec.addTypeVariable((TypeVariableName) getTypeName(type.getReference()));
 		}
 		enter(new ExecutableContext(methodSpec));
 		scan(m.getParameters());
@@ -288,7 +292,7 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 	public <A extends Annotation> void visitCtAnnotation(CtAnnotation<A> annotation) {
 		AnnotationSpec.Builder annotationSpec = AnnotationSpec.builder((ClassName) getTypeName(annotation.getAnnotationType()));
 
-		for (Map.Entry<String, Object> stringObjectEntry : annotation.getElementValues().entrySet()) {
+		for (Map.Entry<String, CtExpression> stringObjectEntry : annotation.getValues().entrySet()) {
 			annotationSpec.addMember(stringObjectEntry.getKey(), stringObjectEntry.getValue().toString());
 		}
 
@@ -297,18 +301,18 @@ public class JavaPoetPrettyPrinter extends CtScanner implements CtVisitor, Prett
 	}
 
 	@Override
-	public String getPackageDeclaration() {
+	public String printPackageInfo(CtPackage ctPackage) {
+		return null;
+	}
+
+	@Override
+	public String printModuleInfo(CtModule ctModule) {
 		return null;
 	}
 
 	@Override
 	public String getResult() {
 		return exit().toString();
-	}
-
-	@Override
-	public void reset() {
-		contexts.clear();
 	}
 
 	@Override
